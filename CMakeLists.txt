@@ -6,6 +6,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -30,6 +31,9 @@ include(${CAPYBARA_DIR}/capybara_library.cmake)
 set(UNITREE_Z1_SDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/z1_sdk/)
 include_directories(${UNITREE_Z1_SDK_DIR}/include/)
 link_directories(${UNITREE_Z1_SDK_DIR}/lib)
+
+
+
 
 #add_library(DriverUnitreeZ1
 #    ${CMAKE_CURRENT_SOURCE_DIR}/include/DriverUnitreeZ1.h
@@ -91,7 +95,6 @@ install(
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
     INCLUDES DESTINATION include
-
     )    
 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #
@@ -124,6 +127,8 @@ target_link_libraries(${RCLCPP_LOCAL_BINARY_NAME}
     capybara
     Z1_SDK_${CMAKE_SYSTEM_PROCESSOR}
     )
+
+
 
 target_include_directories(${RCLCPP_LOCAL_BINARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

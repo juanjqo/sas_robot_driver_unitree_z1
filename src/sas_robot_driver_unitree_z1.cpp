@@ -36,12 +36,12 @@ RobotDriverUnitreeZ1::RobotDriverUnitreeZ1(const RobotDriverUnitreeZ1Configurati
 
 VectorXd RobotDriverUnitreeZ1::get_joint_positions()
 {
-    return impl_->unitree_z1_driver_->get_joint_positions();
+    return impl_->unitree_z1_driver_->get_joint_positions_with_gripper();
 }
 
 void RobotDriverUnitreeZ1::set_target_joint_positions(const VectorXd &desired_joint_positions_rad)
 {
-    impl_->unitree_z1_driver_->set_target_joint_positions(desired_joint_positions_rad);
+    impl_->unitree_z1_driver_->set_target_joint_positions_with_gripper(desired_joint_positions_rad);
 }
 
 VectorXd RobotDriverUnitreeZ1::get_joint_velocities()

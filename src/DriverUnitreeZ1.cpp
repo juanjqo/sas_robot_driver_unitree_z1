@@ -394,4 +394,22 @@ void DriverUnitreeZ1::set_target_joint_positions(const VectorXd &target_joint_po
     target_joint_positions_ = target_joint_positions_rad;
 }
 
+void DriverUnitreeZ1::set_gripper_position(const double &gripper_position)
+{
+    target_gripper_position_ = gripper_position;
+}
+
+void DriverUnitreeZ1::set_target_joint_positions_with_gripper(const VectorXd &target_joint_positions_with_gripper_rad)
+{
+    set_target_joint_positions(target_joint_positions_with_gripper_rad.head(6));
+    set_gripper_position(target_joint_positions_with_gripper_rad(6));
+}
+
+VectorXd DriverUnitreeZ1::get_joint_positions_with_gripper()
+{
+    VectorXd joint_positions_with_gripper = VectorXd::Zero(7);
+    joint_positions_with_gripper << q_measured_(0), q_measured_(1), q_measured_(2), q_measured_(3), q_measured_(4), q_measured_(5), gripper_position_measured_;
+    return joint_positions_with_gripper;
+}
+
 

@@ -130,6 +130,9 @@ public:
 
     void set_target_joint_positions(const VectorXd& target_joint_positions_rad);
 
+    void set_gripper_position(const double& gripper_position);
+    void set_target_joint_positions_with_gripper(const VectorXd& target_joint_positions_with_gripper_rad);
+    VectorXd get_joint_positions_with_gripper();
 
 
 };
