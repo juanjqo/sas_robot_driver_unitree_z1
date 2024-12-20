@@ -46,7 +46,7 @@ void RobotDriverUnitreeZ1::set_target_joint_positions(const VectorXd &desired_jo
 
 VectorXd RobotDriverUnitreeZ1::get_joint_velocities()
 {
-    return impl_->unitree_z1_driver_->get_joint_velocities();
+    return impl_->unitree_z1_driver_->get_joint_velocities_with_gripper();
 }
 
 void RobotDriverUnitreeZ1::connect()

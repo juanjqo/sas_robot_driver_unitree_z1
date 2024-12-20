@@ -115,6 +115,7 @@ void DriverUnitreeZ1::_update_robot_state()
     motor_temperatures_ = Eigen::Map<VectorXi>(temp.data(), temp.size());
 
     gripper_position_measured_ = impl_->arm_->lowstate->getGripperQ();
+    gripper_velocity_measured_ = impl_->arm_->lowstate->getGripperQd();
     /*
      * 0x01 : phase current is too large
      * 0x02 : phase leakage
@@ -249,7 +250,7 @@ void DriverUnitreeZ1::initialize()
         if (move_robot_to_forward_position_when_initialized_)
         {
             std::cout<<"Setting forward robot configuration..."<<std::endl;
-            _move_robot_to_target_joint_positions(Forward_, 0.15, st_break_loops_);
+            _move_robot_to_target_joint_positions(Forward_, 0.4, st_break_loops_);
         }
 
 
@@ -283,7 +284,7 @@ void DriverUnitreeZ1::deinitialize()
     // Force this loop to keep enabled to move the robot to its initial configuration
     std::atomic_bool flag = false;
     std::cout<<"Setting home robot configuration..."<<std::endl;
-    _move_robot_to_target_joint_positions(initial_robot_configuration_, 0.15, &flag);
+    _move_robot_to_target_joint_positions(initial_robot_configuration_, 0.2, &flag);
 
     impl_->arm_->backToStart();
     impl_->arm_->setFsm(UNITREE_ARM::ArmFSMState::PASSIVE);
@@ -358,6 +359,13 @@ VectorXd DriverUnitreeZ1::get_joint_velocities()
     return q_dot_measured_;
 }
 
+VectorXd DriverUnitreeZ1::get_joint_velocities_with_gripper()
+{
+    VectorXd joint_velocities_with_gripper = VectorXd::Zero(7);
+    joint_velocities_with_gripper << q_dot_measured_(0), q_dot_measured_(1), q_dot_measured_(2), q_dot_measured_(3), q_dot_measured_(4), q_dot_measured_(5), gripper_velocity_measured_;
+    return joint_velocities_with_gripper;
+}
+
 VectorXd DriverUnitreeZ1::get_joint_forces()
 {
     return tau_measured_;
@@ -377,10 +385,10 @@ void DriverUnitreeZ1::move_robot_to_target_joint_positions(const VectorXd &q_tar
 {
     if (current_status_ == STATUS::INITIALIZED && mode_ == MODE::None)
     {
-        _move_robot_to_target_joint_positions(q_target, 0.3, st_break_loops_);
+        _move_robot_to_target_joint_positions(q_target, 0.4, st_break_loops_);
     }else if( mode_ == MODE::PositionControl && current_status_ == STATUS::CONNECTED)
     {
-        _move_robot_to_target_joint_positions(q_target, 0.3, st_break_loops_);
+        _move_robot_to_target_joint_positions(q_target, 0.4, st_break_loops_);
     }
     else
     {

@@ -77,6 +77,7 @@ private:
 
     double q_gripper_ni_{0}; // For numerical integration;
     double gripper_position_measured_;
+    double gripper_velocity_measured_;
     double target_gripper_position_{0};
     bool gripper_attached_;
 
@@ -121,6 +122,7 @@ public:
 
     VectorXd get_joint_positions();
     VectorXd get_joint_velocities();
+    VectorXd get_joint_velocities_with_gripper();
     VectorXd get_joint_forces();
     double get_gripper_position();
 
