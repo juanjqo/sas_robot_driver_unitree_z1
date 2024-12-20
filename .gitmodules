@@ -1,3 +1,6 @@
 [submodule "z1_sdk"]
 	path = z1_sdk
 	url = https://github.com/unitreerobotics/z1_sdk.git
+[submodule "capybara_toolkit"]
+	path = capybara_toolkit
+	url = https://github.com/juanjqo/capybara_toolkit.git
