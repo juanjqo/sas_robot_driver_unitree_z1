@@ -14,6 +14,33 @@ find_package(sas_core REQUIRED)
 find_package(sas_common REQUIRED)
 find_package(sas_robot_driver REQUIRED)
 
+##########################################################
+################## NOT ROS2 libraries  ###################
+##########################################################
+
+### Capybara
+#################################################
+set(USE_EXPERIMENTAL_FEATURES true) #optional
+set(USE_CAPY_DQROBOTICS true) #optional
+#################################################
+set (CAPYBARA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/capybara_toolkit)
+include(${CAPYBARA_DIR}/capybara_library.cmake)
+########################################################
+
+set(UNITREE_Z1_SDK_DIR ${CMAKE_CURRENT_SOURCE_DIR}/z1_sdk/)
+include_directories(${UNITREE_Z1_SDK_DIR}/include/)
+link_directories(${UNITREE_Z1_SDK_DIR}/lib)
+
+#add_library(DriverUnitreeZ1
+#    ${CMAKE_CURRENT_SOURCE_DIR}/include/DriverUnitreeZ1.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/src/DriverUnitreeZ1.cpp
+#)
+#target_link_libraries(DriverUnitreeZ1
+#    Z1_SDK_${CMAKE_SYSTEM_PROCESSOR}
+#    capybara
+#)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
+
 
 ####################################
 # CPP Shared Library Block [BEGIN] #
@@ -22,7 +49,13 @@ find_package(sas_robot_driver REQUIRED)
 # The most common use case is to merge everything you need to export
 # into the same shared library called ${PROJECT_NAME}.
 add_library(${PROJECT_NAME} SHARED
-src/RobotDriverUnitreeZ1.cpp
+#src/DriverUnitreeZ1.cpp
+src/sas_robot_driver_unitree_z1.cpp
+src/DriverUnitreeZ1.cpp
+
+)
+target_link_libraries(${PROJECT_NAME}
+    Z1_SDK_${CMAKE_SYSTEM_PROCESSOR}
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -32,12 +65,14 @@ ament_target_dependencies(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
     
 target_include_directories(${PROJECT_NAME}
     PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/ur/Universal_Robots_Client_Library/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/z1_sdk/include
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/capybara_toolkit/include
     )
     
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
@@ -69,7 +104,7 @@ install(
 # https://ros2-tutorial.readthedocs.io/en/latest/
 # While we cant use blocks https://cmake.org/cmake/help/latest/command/block.html#command:block
 # we use set--unset
-set(RCLCPP_LOCAL_BINARY_NAME sas_robot_driver_ur_node)
+set(RCLCPP_LOCAL_BINARY_NAME sas_robot_driver_unitree_z1_node)
 
 add_executable(${RCLCPP_LOCAL_BINARY_NAME}
     src/sas_robot_driver_unitree_z1_node.cpp
@@ -86,14 +121,15 @@ ament_target_dependencies(${RCLCPP_LOCAL_BINARY_NAME}
 
 target_link_libraries(${RCLCPP_LOCAL_BINARY_NAME}
     ${PROJECT_NAME}
-
+    capybara
+    Z1_SDK_${CMAKE_SYSTEM_PROCESSOR}
     )
 
 target_include_directories(${RCLCPP_LOCAL_BINARY_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_compile_features(${RCLCPP_LOCAL_BINARY_NAME} PUBLIC c_std_99 cxx_std_17)
+target_compile_features(${RCLCPP_LOCAL_BINARY_NAME} PUBLIC c_std_99 cxx_std_20)
 
 install(TARGETS ${RCLCPP_LOCAL_BINARY_NAME}
     DESTINATION lib/${PROJECT_NAME})
@@ -103,15 +139,6 @@ unset(RCLCPP_LOCAL_BINARY_NAME)
 # CPP Binary Block [END] #
 ##########################
 
-# According to this file, this is the first time I've attempted this
-##### Relevant Resource Files #####
-install(FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ur/Universal_Robots_Client_Library/resources/external_control.urscript
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ur/Universal_Robots_Client_Library/examples/resources/rtde_input_recipe.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ur/Universal_Robots_Client_Library/examples/resources/rtde_output_recipe.txt
-  DESTINATION share/${PROJECT_NAME}
-)
-##END## PYTHON EXECUTABLES #####
 
 if(BUILD_TESTING)
     find_package(ament_lint_auto REQUIRED)
