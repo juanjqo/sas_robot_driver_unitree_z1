@@ -22,7 +22,7 @@ find_package(sas_robot_driver REQUIRED)
 # The most common use case is to merge everything you need to export
 # into the same shared library called ${PROJECT_NAME}.
 add_library(${PROJECT_NAME} SHARED
-RobotDriverUnitreeZ1.h
+src/RobotDriverUnitreeZ1.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}

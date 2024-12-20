@@ -5,7 +5,6 @@
 #include <dqrobotics/DQ.h>
 #include <dqrobotics/solvers/DQ_PROXQPSolver.h>
 #include <memory>
-#include <robot_drivers/RobotDriver.h>
 
 using namespace DQ_robotics;
 using namespace Eigen;
@@ -85,6 +84,20 @@ private:
 
 
 public:
+enum class STATUS{
+    IDLE,
+    CONNECTED,
+    INITIALIZED,
+    DEINITIALIZED,
+    DISCONNECTED,
+};
+
+enum class MODE{
+    None,
+    PositionControl,
+    VelocityControl,
+    ForceControl,
+};
     RobotDriverUnitreeZ1() = delete;
     RobotDriverUnitreeZ1(const RobotDriverUnitreeZ1&) = delete;
     RobotDriverUnitreeZ1& operator= (const RobotDriverUnitreeZ1&) = delete;
