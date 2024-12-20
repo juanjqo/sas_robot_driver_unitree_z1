@@ -1,0 +1,3 @@
+[submodule "z1_sdk"]
+	path = z1_sdk
+	url = https://github.com/unitreerobotics/z1_sdk.git
